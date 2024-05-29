@@ -2,6 +2,8 @@ package app.xlog.ggbond;
 
 
 import app.xlog.ggbond.payments.ScanCode.IScanCodeApi;
+import app.xlog.ggbond.payments.ScanCode.model.PrePayResponse;
+import app.xlog.ggbond.utils.NoVerifySSLClient;
 import cn.hutool.crypto.SecureUtil;
 import okhttp3.*;
 import org.junit.jupiter.api.Test;
@@ -16,8 +18,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Map;
+
 
 /**
  * Unit test for simple App.
@@ -28,37 +29,7 @@ public class AppTest {
     public AppTest() throws NoSuchAlgorithmException, KeyManagementException {
     }
 
-    // 创建一个无需验证SSL的OkHttpClient
-    public static OkHttpClient getClient() throws NoSuchAlgorithmException, KeyManagementException {
-        TrustManager[] trustManagers = new TrustManager[]{
-                new X509TrustManager() {
-                    @Override
-                    public void checkClientTrusted(X509Certificate[] chain, String authType) {
-                    }
-
-                    @Override
-                    public void checkServerTrusted(X509Certificate[] chain, String authType) {
-                    }
-
-                    @Override
-                    public X509Certificate[] getAcceptedIssuers() {
-                        return new X509Certificate[0];
-                    }
-                }
-        };
-
-        SSLContext sslContext = SSLContext.getInstance("SSL");
-        sslContext.init(null, trustManagers, new SecureRandom());
-
-        final OkHttpClient client = new OkHttpClient.Builder()
-                .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0])
-                .hostnameVerifier((s, sslSession) -> true)
-                .build();
-
-        return client;
-    }
-
-    private final OkHttpClient client = getClient();
+    private final OkHttpClient client = NoVerifySSLClient.getClient();
 
     // 易支付获取签名信息
     @Test
@@ -95,8 +66,9 @@ public class AppTest {
         }
     }
 
+    // 测试通过Retrofit进行扫码支付
     @Test
-    public void testAdvancePayment() throws IOException {
+    public void testPrePayment() throws IOException {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://pay.gm-pay.net/")
                 .client(client)
@@ -104,7 +76,8 @@ public class AppTest {
                 .build();
 
         IScanCodeApi scanCodeApi = retrofit.create(IScanCodeApi.class);
-        Call<Object> call = scanCodeApi.advancePayment("2769",
+        Call<PrePayResponse> call = scanCodeApi.prePayment(
+                "2769",
                 "alipay",
                 "zsbz20240529",
                 "https://www.weixin.qq.com/wxpay/pay.php",
@@ -114,7 +87,7 @@ public class AppTest {
                 "0dedeeec7c591b11b35bf3c922edebb3",
                 "MD5");
 
-        retrofit2.Response<Object> execute = call.execute();
-        System.out.println(execute.body());
+        retrofit2.Response<PrePayResponse> prePayResponse = call.execute();
+        System.out.println(prePayResponse.body());
     }
 }
