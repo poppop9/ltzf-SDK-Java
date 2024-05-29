@@ -1,21 +1,20 @@
 package app.xlog.ggbond;
 
 
-import app.xlog.ggbond.utils.SignUtils;
+import app.xlog.ggbond.payments.ScanCode.IScanCodeApi;
 import cn.hutool.crypto.SecureUtil;
 import okhttp3.*;
-import okio.BufferedSink;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import retrofit2.Retrofit;
+import retrofit2.Call;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.net.ssl.*;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
@@ -64,10 +63,9 @@ public class AppTest {
     // 易支付获取签名信息
     @Test
     public void testYZFSign() {
-        String sign = "clientip=169.254.87.226&money=0.3&name=测试一下&notify_url=https://www.weixin.qq.com/wxpay/pay.php&out_trade_no=zsbz20240528&pid=2769&type=alipay" + "Uxy57Z1Y1JK2y92VjVXV27a717j9V17U";
+        String sign = "clientip=169.254.87.226&money=0.3&name=测试一下&notify_url=https://www.weixin.qq.com/wxpay/pay.php&out_trade_no=zsbz20240529&pid=2769&type=alipay" + "Uxy57Z1Y1JK2y92VjVXV27a717j9V17U";
         String signMD5 = SecureUtil.md5(sign);
         System.out.println(signMD5);
-        // 8d5ee6d7c8f4673f50aac36690414d69
     }
 
     // 易支付测试扫码支付
@@ -97,47 +95,26 @@ public class AppTest {
         }
     }
 
-    // 蓝兔支付获取签名信息
     @Test
-    public void testSign() {
-        // 获取时间戳
-        long timestamp = System.currentTimeMillis() / 1000;
-        System.out.println(timestamp);
-
-        Map<String, String> params = new HashMap<>();
-        params.put("mch_id", "1673424392");
-        params.put("out_trade_no", "zsbz20240526");
-        params.put("total_fee", "0.01");
-        params.put("body", "测试一下");
-        params.put("timestamp", String.valueOf(timestamp));
-        params.put("notify_url", "https://www.weixin.qq.com/wxpay/pay.php");
-
-        String sign = SignUtils.createSign(params, "6d3e889f359fcb83d150e9553a9217b9");
-        System.out.println(sign);
-    }
-
-    // 蓝兔支付测试扫码支付
-    @Test
-    public void testLTZFScanCodePayment() throws IOException {
-        RequestBody body = new FormBody.Builder()
-                .add("mch_id", "1673424392")
-                .add("out_trade_no", "zsbz20240526")
-                .add("total_fee", "0.01")
-                .add("body", "测试一下")
-                .add("timestamp", "1716902215")
-                .add("notify_url", "https://www.weixin.qq.com/wxpay/pay.php")
-                .add("sign", "E52C71F495E03B66DCCABBE1DA3FAC9E")
+    public void testAdvancePayment() throws IOException {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://pay.gm-pay.net/")
+                .client(client)
+                .addConverterFactory(JacksonConverterFactory.create())
                 .build();
 
-        Request request = new Request.Builder()
-                .url("https://api.ltzf.cn/api/wxpay/native")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
-                .post(body)
-                .build();
+        IScanCodeApi scanCodeApi = retrofit.create(IScanCodeApi.class);
+        Call<Object> call = scanCodeApi.advancePayment("2769",
+                "alipay",
+                "zsbz20240529",
+                "https://www.weixin.qq.com/wxpay/pay.php",
+                "测试一下",
+                "0.3",
+                "169.254.87.226",
+                "0dedeeec7c591b11b35bf3c922edebb3",
+                "MD5");
 
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);
-            System.out.println(response.body().string());
-        }
+        retrofit2.Response<Object> execute = call.execute();
+        System.out.println(execute.body());
     }
 }
