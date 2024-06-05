@@ -12,11 +12,12 @@ public interface IScanCodeApi {
     // 定义了一个POST请求，请求路径为mapi.php，以及各种传入的参数
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
-    @POST("mapi.php")
+    @POST("api/pay")
     Call<PrePayResponse> prePayment(@Field("pid") String pid,
                                     @Field("type") String type,
                                     @Field("out_trade_no") String outTradeNo,
                                     @Field("notify_url") String notifyUrl,
+                                    @Field("return_url") String returnUrl,
                                     @Field("name") String name,
                                     @Field("money") String money,
                                     @Field("clientip") String clientip,

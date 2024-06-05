@@ -4,6 +4,7 @@ package app.xlog.ggbond;
 import app.xlog.ggbond.payments.ScanCode.IScanCodeApi;
 import app.xlog.ggbond.payments.ScanCode.model.PrePayResponse;
 import app.xlog.ggbond.utils.NoVerifySSLClient;
+import app.xlog.ggbond.utils.URLtoQRCodetoBase64;
 import cn.hutool.crypto.SecureUtil;
 import okhttp3.*;
 import org.junit.jupiter.api.Test;
@@ -84,10 +85,18 @@ public class AppTest {
                 "测试一下",
                 "0.3",
                 "169.254.87.226",
+                "10.246.110.100",
                 "0dedeeec7c591b11b35bf3c922edebb3",
                 "MD5");
 
         retrofit2.Response<PrePayResponse> prePayResponse = call.execute();
         System.out.println(prePayResponse.body());
+    }
+
+    // 测试URL转二维码，再转base64
+    @Test
+    public void testURLtoQRCodetoBase64(){
+        String base64 = URLtoQRCodetoBase64.urlToBase64("https://qr.alipay.com/fkx14218jkexbitjwfculd9?t=1717576038484");
+        System.out.println(base64);
     }
 }

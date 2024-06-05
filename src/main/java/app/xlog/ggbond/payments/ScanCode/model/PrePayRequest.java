@@ -13,10 +13,11 @@ public class PrePayRequest {
     private String outTradeNo;
     @JsonProperty("notify_url")
     private String notifyUrl;
+    @JsonProperty("return_url")
+    private String returnUrl;
     private String name;
     private String money;
-    @JsonProperty("clientip")
-    private String clientIp;
+    private String clientip;
     private String sign;
     @JsonProperty("sign_type")
     private String signType;
@@ -26,12 +27,13 @@ public class PrePayRequest {
     // 我们只能自己写一个方法来生成签名
     public String createSign(String MerchantKey) {
         // 签名算法字段的顺序不能错，而且signType不参与签名
-        String sign = "clientip=" + getClientIp() +
+        String sign = "clientip=" + getClientip() +
                 "&money=" + getMoney() +
                 "&name=" + getName() +
                 "&notify_url=" + getNotifyUrl() +
                 "&out_trade_no=" + getOutTradeNo() +
                 "&pid=" + getPid() +
+                "&return_url=" + getReturnUrl() +
                 "&type=" + getType() +
                 MerchantKey;
 
