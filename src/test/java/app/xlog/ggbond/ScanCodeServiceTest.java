@@ -16,7 +16,7 @@ import java.security.NoSuchAlgorithmException;
 public class ScanCodeServiceTest {
     @Test
     public void testScanCodeService() throws NoSuchAlgorithmException, KeyManagementException, IOException {
-        ScanCodeService scanCodeService2 = new PayFactoryImpl("9i2fDZNa3tJT3v29NIzmdKF9IvjbKBmD").createScanCodeService2();
+        ScanCodeService scanCodeService = new PayFactoryImpl("9i2fDZNa3tJT3v29NIzmdKF9IvjbKBmD").createScanCodeService();
         PrePayRequest prePayRequest = new PrePayRequest();
         prePayRequest.setPid("5241");
         prePayRequest.setType("alipay");
@@ -28,7 +28,7 @@ public class ScanCodeServiceTest {
         prePayRequest.setClientip("10.246.110.100");
         prePayRequest.setSignType("MD5");
 
-        PrePayResponse prePayResponse = scanCodeService2.prePay(prePayRequest);
+        PrePayResponse prePayResponse = scanCodeService.prePay(prePayRequest);
         System.out.println(prePayResponse);
     }
 }

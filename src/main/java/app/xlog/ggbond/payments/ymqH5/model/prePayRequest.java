@@ -1,4 +1,4 @@
-package app.xlog.ggbond.payments.ymqScanCode.model;
+package app.xlog.ggbond.payments.ymqH5.model;
 
 import cn.hutool.crypto.SecureUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,7 +1,7 @@
-package app.xlog.ggbond.payments.ymqScanCode;
+package app.xlog.ggbond.payments.ymqH5;
 
-import app.xlog.ggbond.payments.ymqScanCode.model.prePayRequest;
-import app.xlog.ggbond.payments.ymqScanCode.model.prePayResponse;
+import app.xlog.ggbond.payments.ymqH5.model.prePayRequest;
+import app.xlog.ggbond.payments.ymqH5.model.prePayResponse;
 import app.xlog.ggbond.utils.NoVerifySSLClient;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -11,11 +11,11 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
-public class YmqScanCodeService {
-    private IYmqScanCodeApi ymqScanCodeApi;
+public class YmqH5Service {
+    private IYmqH5Api ymqScanCodeApi;
     private String merchantKey;
 
-    public YmqScanCodeService(String merchantKey) throws NoSuchAlgorithmException, KeyManagementException {
+    public YmqH5Service(String merchantKey) throws NoSuchAlgorithmException, KeyManagementException {
         this.merchantKey = merchantKey;
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://open.yunmianqian.com/")
@@ -23,10 +23,10 @@ public class YmqScanCodeService {
                 .addConverterFactory(JacksonConverterFactory.create())
                 .build();
 
-        this.ymqScanCodeApi = retrofit.create(IYmqScanCodeApi.class);
+        this.ymqScanCodeApi = retrofit.create(IYmqH5Api.class);
     }
 
-    public void prePay(prePayRequest prePayRequest) throws IOException {
+    public prePayResponse prePay(prePayRequest prePayRequest) throws IOException {
         Call<prePayResponse> call = ymqScanCodeApi.prePayment(
                 prePayRequest.getAppId(),
                 prePayRequest.getOutOrderSn(),
@@ -39,6 +39,6 @@ public class YmqScanCodeService {
         );
 
         prePayResponse payResponse = call.execute().body();
-        System.out.println(payResponse);
+        return payResponse;
     }
 }

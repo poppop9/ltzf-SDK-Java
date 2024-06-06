@@ -1,13 +1,13 @@
-package app.xlog.ggbond.payments.ymqScanCode;
+package app.xlog.ggbond.payments.ymqH5;
 
-import app.xlog.ggbond.payments.ymqScanCode.model.prePayResponse;
+import app.xlog.ggbond.payments.ymqH5.model.prePayResponse;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface IYmqScanCodeApi {
+public interface IYmqH5Api {
     @FormUrlEncoded
     @Headers("Content-Type: application/x-www-form-urlencoded")
     @POST("api/pay")

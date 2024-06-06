@@ -1,9 +1,9 @@
 package app.xlog.ggbond;
 
-import app.xlog.ggbond.payments.ymqScanCode.YmqScanCodeService;
+import app.xlog.ggbond.payments.ymqH5.YmqH5Service;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import app.xlog.ggbond.payments.ymqScanCode.model.prePayRequest;
+import app.xlog.ggbond.payments.ymqH5.model.prePayRequest;
 
 
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 @SpringBootTest
-public class YmqScanCodeServiceTest {
+public class YmqH5ServiceTest {
     @Test
     public void testPrePayment() throws NoSuchAlgorithmException, KeyManagementException, IOException {
         prePayRequest prePayRequest = new prePayRequest();
@@ -23,7 +23,7 @@ public class YmqScanCodeServiceTest {
         prePayRequest.setAttach("test");
         prePayRequest.setNotifyUrl("https://example.com");
 
-        YmqScanCodeService ymqScanCodeService = new YmqScanCodeService("cbd4cc4d1e95abcd907354f7b017026e");
-        ymqScanCodeService.prePay(prePayRequest);
+        YmqH5Service ymqH5Service = new YmqH5Service("cbd4cc4d1e95abcd907354f7b017026e");
+        ymqH5Service.prePay(prePayRequest);
     }
 }

@@ -1,4 +1,4 @@
-package app.xlog.ggbond.payments.ymqScanCode.model;
+package app.xlog.ggbond.payments.ymqH5.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
@@ -10,7 +10,7 @@ public class prePayResponse {
     private OrderData data; // 订单数据
 
     @Data
-    static class OrderData {
+    public static class OrderData {
         @JsonProperty("order_sn")
         private String orderSn; // 订单编号
         @JsonProperty("out_order_sn")
